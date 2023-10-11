@@ -96,11 +96,11 @@ def fc_layer(X, weights, biases):
 
 
 def initialize(inputDim, outputDim, hiddenLayerDim):
-    w1 = [[uniform(0, 1) for i in range(inputDim)]
+    w1 = [[uniform(-1, 1) for i in range(inputDim)]
             for j in range(hiddenLayerDim)]
-    b1 = [uniform(0, 1) for j in range(hiddenLayerDim)]
-    w2 = [[uniform(0, 1) for j in range(hiddenLayerDim)] for j in range(outputDim)]
-    b2 = [uniform(0, 1) for i in range(outputDim)]
+    b1 = [uniform(-1, 1) for j in range(hiddenLayerDim)]
+    w2 = [[uniform(-1, 1) for j in range(hiddenLayerDim)] for j in range(outputDim)]
+    b2 = [uniform(-1, 1) for i in range(outputDim)]
 
     return w1, b1, w2, b2
 
