@@ -139,14 +139,15 @@ def printLoss(y_train, A2, iterNum):
 def backPropagation(Z1, A1, Z2, A2, w1, w2, X, Y):
 
 #calculations for the output layer
-    
+#stochastic gradient descent, send each input and alter each weight
+
     #calculate the aggregate of the gradient of the loss function across all inputs of X
     #this is equal to the 1/num_samples * SUMMATION(2 * (Prediction - Output))
     aggGradLoss = [0] * len(A2[0])
     for i in range(len(A2)):
         aggGradLoss = vAdd(aggGradLoss, vMultiplyConstant((vSub(A2[i], Y[i])), 2 / len(A2)))
     
-    #calculate the aggregate of the gradient of the sigmoid function across all inputs X
+    #calculate the aggregate of the gradient6 of the sigmoid function across all inputs X
     #this is equal to 1/num_samples * SUMMATION(derivative of the sigmoid evaluated at each point in Z2)
     #Where Z2 is the output of the fully connected linear layer before the activation function
     aggGradSigmoid = [0] * len(Z2[0])
@@ -187,17 +188,8 @@ def backPropagation(Z1, A1, Z2, A2, w1, w2, X, Y):
     for i in range(1, len(X)):
         gradWeights1 = mAdd(gradWeights1, mMult(gradBiases1, vMultiplyConstant(X[i], 1 / len(X))))
 
-    print()
-    print(gradWeights)
-    print()
-    print(gradBiases)
-    print()
-    print(gradWeights1)
-    print()
-    print(gradBiases1)
-    print()
-
     return gradWeights, gradBiases, gradWeights1, gradBiases1
+
 
 def printAccuracy(test_pred, y_test):
     predictions = [int(a[0] > .5) for a in test_pred]

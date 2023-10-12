@@ -3,14 +3,17 @@ from random import shuffle
 
 learningRate = .5
 
-numIterations = 1
+numIterations = 100
 
 inputDim = 2
 outputDim = 1
 
 hiddenLayerDim = 4
+#two layers with a sufficient number of hidden nodes
+#if the input is n, and output is 2^n, it can learn anything
+#this is only for binary inputs
 
-scale = 1
+scale = 100
 
 X = [[0, 0, 0], [1, 0, 1], [0, 1, 1], [1, 1, 0]] * scale
 shuffle(X)
