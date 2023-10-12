@@ -1,14 +1,14 @@
 from learningUtils import *
 from random import shuffle
 
-learningRate = .5
+learningRate = .01
 
-numIterations = 100
+numIterations = 1000
 
 inputDim = 2
 outputDim = 1
 
-hiddenLayerDim = 4
+hiddenLayerDim = 8
 #two layers with a sufficient number of hidden nodes
 #if the input is n, and output is 2^n, it can learn anything
 #this is only for binary inputs
@@ -31,13 +31,23 @@ w1, b1, w2, b2 = initialize(inputDim, outputDim, hiddenLayerDim)
 for iterNum in range(1, numIterations + 1):
     Z1, A1, Z2, A2 = forward_prop(w1, b1, w2, b2, X_train)
 
-    if iterNum  % 5 == 0:
+    if iterNum  % 100 == 0:
         printLoss(y_train, A2, iterNum)
 
-    gradWeights, gradBiases, gradWeights1, gradBiases1 = backPropagation(Z1, A1, Z2, A2, w1, w2, X_train, y_train)
+    netGW2 = w2
+    netGB2 = b2
+    netGW1 = w1
+    netGB1 = b1
 
-    w2, b2 = updateParams(w2, b2, gradWeights, gradBiases, learningRate)
-    w1, b1 = updateParams(w1, b1, gradWeights1, gradBiases1, learningRate)
+    for i in range(len(X_train)):
+        gradWeights2, gradBiases2, gradWeights1, gradBiases1 = backPropagation(Z1[i], A1[i], Z2[i], A2[i], w1, w2, X_train[i], y_train[i])
+        netGW2, netGB2 = updateParams(w2, b2, gradWeights2, gradBiases2, learningRate)
+        netGW1, netGB1 = updateParams(w1, b1, gradWeights1, gradBiases1, learningRate)
+
+    w2 = netGW2
+    b2 = netGB2
+    w1 = netGW1
+    b1 = netGB1
 
 
 Z1, A1, Z2, A2 = forward_prop(w1, b1, w2, b2, X_test)

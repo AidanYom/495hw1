@@ -141,54 +141,43 @@ def backPropagation(Z1, A1, Z2, A2, w1, w2, X, Y):
 #calculations for the output layer
 #stochastic gradient descent, send each input and alter each weight
 
-    #calculate the aggregate of the gradient of the loss function across all inputs of X
-    #this is equal to the 1/num_samples * SUMMATION(2 * (Prediction - Output))
-    aggGradLoss = [0] * len(A2[0])
-    for i in range(len(A2)):
-        aggGradLoss = vAdd(aggGradLoss, vMultiplyConstant((vSub(A2[i], Y[i])), 2 / len(A2)))
+    #calculate the gradient of the loss function across X
+    #this is equal to(2 * (Prediction - Output))
+    gradLoss = vMultiplyConstant((vSub(A2, Y)), 2)
     
-    #calculate the aggregate of the gradient6 of the sigmoid function across all inputs X
-    #this is equal to 1/num_samples * SUMMATION(derivative of the sigmoid evaluated at each point in Z2)
+    #calculate the gradient of the sigmoid function across X
+    #this is equal to (derivative of the sigmoid evaluated at each point in Z2)
     #Where Z2 is the output of the fully connected linear layer before the activation function
-    aggGradSigmoid = [0] * len(Z2[0])
-    for i in range(len(Z2)):
-        aggGradSigmoid = vAdd(aggGradSigmoid, vMultiplyConstant(sigmoid_layer_derivative(Z2[i]), 1 / len(Z2)))
+    gradSigmoid = sigmoid_layer_derivative(Z2)
 
     #calculate the gradient of the output with respect to the bias
     #from chain rule, this is the product of the aggregate gradient loss, and the aggregate gradient of the sigmoid
     #this loop calculates the aggregate weight across all X
-    gradBiases = vMult(aggGradLoss, aggGradSigmoid)
+    gradBiases = vMult(gradLoss, gradSigmoid)
 
     #calculate the gradient of the output with respect to the weights
     #from chain rule, this is the gradient of the biases, multiplied by the output of the previous layer
-    #this loop calculates the aggregate weight across all X
-    gradWeights = mMult(gradBiases, vMultiplyConstant(A1[0], 1 / len(A1)))
-    for i in range(1, len(A1)):
-        gradWeights = mAdd(gradWeights, mMult(gradBiases, vMultiplyConstant(A1[i], 1 / len(A1))))
+    gradWeights = mMult(gradBiases, A1)
 
 #calculation for the hidden layer
 
     #calculate the aggregate of the gradient of the sigmoid layer across all inputs X
     #Z1 is the output of the fully connected linear layer from the hidden layer, before activation function
     #this follows the same process as above, but with the outputs from the hidden layer
-    aggGradSigmoid1 = [0] * len(Z1[0])
-    for i in range(len(Z1)):
-        aggGradSigmoid1 = vAdd(aggGradSigmoid1, vMultiplyConstant(sigmoid_layer_derivative(Z1[i]), 1 / len(Z1)))
+    gradSigmoidNext = sigmoid_layer_derivative(Z1)
     
     #calculate the gradient of the output with respect to the biases of the first hidden layer
     #this is the product of W2 (the weights of the output layer) transposed, and the 
     #the gradient of the output with respect to the bias of the output layer, multiplied by the 
     #previous sigmoid gradient calculated for this stage
-    gradBiases1 = vMult(mMultiplyVector(transpose(w2), gradBiases), aggGradSigmoid1)
+    gradBiasesNext = vMult(mMultiplyVector(transpose(w2), gradBiases), gradSigmoidNext)
     
     #this is the gradient of the output with respect to the weights of the first layer
-    #this is the aggregate of the product of the gradient of the output with respect to the first
+    #this is the gradient of the output with respect to the first
     #biases, and the inputs
-    gradWeights1 = mMult(gradBiases1, vMultiplyConstant(X[0], 1 / len(X)))
-    for i in range(1, len(X)):
-        gradWeights1 = mAdd(gradWeights1, mMult(gradBiases1, vMultiplyConstant(X[i], 1 / len(X))))
+    gradWeightsNext = mMult(gradBiasesNext, X)
 
-    return gradWeights, gradBiases, gradWeights1, gradBiases1
+    return gradWeights, gradBiases, gradWeightsNext, gradBiasesNext
 
 
 def printAccuracy(test_pred, y_test):
