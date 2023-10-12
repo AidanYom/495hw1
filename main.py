@@ -18,7 +18,7 @@ scale = 100
 X = [[0, 0, 0], [1, 0, 1], [0, 1, 1], [1, 1, 0]] * scale
 shuffle(X)
 
-split = int((len(X) * 3) / 4)
+split = int((len(X) * 4) / 5)
 
 X_train = [x[0:2] for x in X[0:split]]
 X_test = [x[0:2] for x in X[split:]]
