@@ -134,7 +134,8 @@ def printLoss(y_train, A2, iterNum):
     for i in range(len(A2)):
         aggLoss += loss(y_train[i], A2[i])
 
-    print("iteration:", iterNum, "loss:", aggLoss)
+    # print("iteration:", iterNum, "| Average loss:", aggLoss / len(A2))
+    return aggLoss / len(A2)
 
 def backPropagation(Z1, A1, Z2, A2, w1, w2, X, Y):
 
@@ -199,18 +200,20 @@ def printAccuracy(test_pred, y_test):
 
     accuracy = num_correct / len(predictions) * 100
 
-    print("accuracy:", accuracy, "%")
+    return accuracy
+
+    # print("accuracy:", accuracy, "%")
 
 def trainAndTest(inputDim, outputDim, hiddenLayerDim, X_train, X_test, y_train, y_test, name, learningRate, numIterations):
-    print("Training and testing of", name,"\n")
-    print("The Hyperparameters are as follows:")
-    print("Number of hidden layers: 1")
-    print("Hidden layer(s) dimension:", hiddenLayerDim)
-    print("Learning Rate:", learningRate)
-    print("Number of epochs: ", numIterations)
-    print("Samples used: ", len(X_train) + len(X_test))
-    print("Training and Test Split: 80/20")
-    print()
+    # print("Training and testing of", name,"\n")
+    # print("The parameters are as follows:")
+    # print("Number of hidden layers: 1")
+    # print("Hidden layer(s) dimension:", hiddenLayerDim)
+    # print("Learning Rate:", learningRate)
+    # print("Number of epochs: ", numIterations)
+    # print("Samples used: ", len(X_train) + len(X_test))
+    # print("Training and Test Split: 80/20")
+    # print()
 
 
     w1, b1, w2, b2 = initialize(inputDim, outputDim, hiddenLayerDim)
@@ -218,8 +221,8 @@ def trainAndTest(inputDim, outputDim, hiddenLayerDim, X_train, X_test, y_train, 
     for iterNum in range(1, numIterations + 1):
         Z1, A1, Z2, A2 = forward_prop(w1, b1, w2, b2, X_train)
 
-        if iterNum  % 200 == 0:
-            printLoss(y_train, A2, iterNum)
+        if ((iterNum  % (numIterations / 2) == 0) or (iterNum == 1)):
+            loss = printLoss(y_train, A2, iterNum)
 
         netGW2 = w2
         netGB2 = b2
@@ -239,8 +242,9 @@ def trainAndTest(inputDim, outputDim, hiddenLayerDim, X_train, X_test, y_train, 
 
     Z1, A1, Z2, A2 = forward_prop(w1, b1, w2, b2, X_test)
 
-    printAccuracy(A2, y_test)
-    print("\n")
+    acc = printAccuracy(A2, y_test)
+    # print("\n")
+    return loss, acc
 
 #adapted from chat.openai.com
 def generate_two_bit_adder_dataset():
