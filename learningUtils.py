@@ -129,12 +129,12 @@ def updateParams(initialW, initialB, gradW, gradB, learning_rate):
 
     return newW, newB
 
-def printLoss(y_train, A2):
+def printLoss(y_train, A2, iterNum):
     aggLoss = 0
     for i in range(len(A2)):
         aggLoss += loss(y_train[i], A2[i])
 
-    print("Total Squared Loss:", aggLoss)
+    print("iteration:", iterNum, "loss:", aggLoss)
 
 def backPropagation(Z1, A1, Z2, A2, w1, w2, X, Y):
 
@@ -208,7 +208,7 @@ def trainAndTest(inputDim, outputDim, hiddenLayerDim, X_train, X_test, y_train, 
     print("Hidden layer(s) dimension:", hiddenLayerDim)
     print("Learning Rate:", learningRate)
     print("Number of epochs: ", numIterations)
-    print("Number of Samples used: ", len(X_train) + len(X_test))
+    print("Samples used: ", len(X_train) + len(X_test))
     print("Training and Test Split: 80/20")
     print()
 
@@ -217,6 +217,9 @@ def trainAndTest(inputDim, outputDim, hiddenLayerDim, X_train, X_test, y_train, 
 
     for iterNum in range(1, numIterations + 1):
         Z1, A1, Z2, A2 = forward_prop(w1, b1, w2, b2, X_train)
+
+        if iterNum  % 200 == 0:
+            printLoss(y_train, A2, iterNum)
 
         netGW2 = w2
         netGB2 = b2
@@ -236,7 +239,6 @@ def trainAndTest(inputDim, outputDim, hiddenLayerDim, X_train, X_test, y_train, 
 
     Z1, A1, Z2, A2 = forward_prop(w1, b1, w2, b2, X_test)
 
-    printLoss(y_train, A2)
     printAccuracy(A2, y_test)
     print("\n")
 
